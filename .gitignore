@@ -1,0 +1,9 @@
+/data
+node_modules/
+.env
+.env.*
+*.sqlite3*
+*.pem
+*.key
+*.log
+.DS_Store

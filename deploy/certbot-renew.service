@@ -1,0 +1,9 @@
+[Unit]
+Description=Renew Weekly Planner IP certificate
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+TimeoutStartSec=30min
+ExecStart=/opt/certbot/bin/certbot renew --quiet --deploy-hook "/usr/bin/systemctl reload nginx"

@@ -1,0 +1,23 @@
+[Unit]
+Description=Weekly Planner
+After=network.target
+
+[Service]
+Type=simple
+User=planner
+Group=planner
+WorkingDirectory=/opt/weekly-planner
+Environment=NODE_ENV=production
+Environment=PORT=4173
+Environment=PLANNER_DB=/var/lib/weekly-planner/planner.sqlite3
+ExecStart=/usr/bin/node --no-warnings /opt/weekly-planner/server.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/weekly-planner
+
+[Install]
+WantedBy=multi-user.target

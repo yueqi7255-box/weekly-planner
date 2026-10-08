@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Weekly Planner backup
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+Unit=weekly-planner-backup.service
+
+[Install]
+WantedBy=timers.target

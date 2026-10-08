@@ -1,0 +1,12 @@
+{
+  "name": "weekly-planner",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node --no-warnings server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

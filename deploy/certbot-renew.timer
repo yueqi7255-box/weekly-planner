@@ -1,0 +1,11 @@
+[Unit]
+Description=Check Weekly Planner certificate twice daily
+
+[Timer]
+OnCalendar=*-*-* 00,12:15:00
+RandomizedDelaySec=30m
+Persistent=true
+Unit=certbot-renew.service
+
+[Install]
+WantedBy=timers.target

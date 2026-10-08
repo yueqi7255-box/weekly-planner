@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f9f7">
+  <title>登录 · 周计划</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/login.js" defer></script>
+</head>
+<body class="auth-page">
+  <main class="auth-panel">
+    <h1>周计划</h1>
+    <div class="auth-switch" role="group" aria-label="账号操作">
+      <button type="button" id="login-tab" class="active" aria-pressed="true">登录</button>
+      <button type="button" id="register-tab" aria-pressed="false">注册</button>
+    </div>
+    <form id="auth-form">
+      <label>用户名<input name="username" type="text" autocomplete="username" minlength="3" maxlength="32" required autofocus></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required></label>
+      <label id="confirm-field" hidden>确认密码<input name="confirm_password" type="password" autocomplete="new-password"></label>
+      <p class="form-error" id="auth-error" role="alert" hidden></p>
+      <button class="primary-action" id="auth-submit" type="submit">登录</button>
+    </form>
+  </main>
+</body>
+</html>

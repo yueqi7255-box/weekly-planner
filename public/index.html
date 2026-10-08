@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f9f7">
+  <title>周计划</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell" id="app-shell">
+    <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+    <aside class="sidebar" id="sidebar" aria-label="常驻记录">
+      <section class="sidebar-section">
+        <div class="section-heading"><h2>长期目标</h2><span class="save-dot" id="long-term-dot" aria-hidden="true"></span></div>
+        <textarea id="long-term" aria-label="长期目标" spellcheck="false" placeholder="写下想长期坚持的方向"></textarea>
+      </section>
+      <section class="sidebar-section notes-section">
+        <div class="section-heading"><h2>便笺</h2><span class="save-dot" id="notes-dot" aria-hidden="true"></span></div>
+        <textarea id="notes" aria-label="便笺" spellcheck="false" placeholder="记录随手想到的事"></textarea>
+      </section>
+    </aside>
+
+    <main class="workspace" id="workspace">
+      <header class="topbar">
+        <button class="icon-button mobile-sidebar-toggle" id="sidebar-toggle" type="button" aria-label="打开长期目标与便笺" title="长期目标与便笺">☰</button>
+        <div class="view-switch" role="group" aria-label="切换计划视图">
+          <button class="view-button active" id="week-view-button" type="button" aria-label="周视图" aria-pressed="true" title="周视图">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+          </button>
+          <button class="view-button" id="list-view-button" type="button" aria-label="列表视图" aria-pressed="false" title="列表视图">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          </button>
+        </div>
+        <h1 class="mobile-view-title">周计划</h1>
+        <div class="week-navigation" aria-label="切换周次">
+          <button class="icon-button" id="prev-week" type="button" aria-label="上一周" title="上一周">‹</button>
+          <button class="date-button" id="date-button" type="button" aria-label="选择周次" title="选择周次"><span id="week-label"></span><span class="date-chevron" aria-hidden="true"></span></button>
+          <input id="week-picker" class="week-picker" type="date" aria-label="选择日期以跳转到对应周">
+          <button class="icon-button" id="next-week" type="button" aria-label="下一周" title="下一周">›</button>
+          <button class="today-button" id="current-week" type="button">本周</button>
+        </div>
+        <div class="topbar-actions">
+          <span id="save-state" class="save-state" role="status" aria-live="polite">已保存</span>
+          <button class="status-button" id="status-button" type="button" aria-haspopup="menu" aria-expanded="false" title="本周完成度">
+            <span class="face" id="status-face" data-status="unset" aria-hidden="true"></span>
+            <span id="status-text">未评估</span>
+            <span class="button-chevron" aria-hidden="true"></span>
+          </button>
+          <button class="icon-button more-button" id="more-button" type="button" aria-label="数据选项" aria-haspopup="menu" aria-expanded="false" title="数据选项">⋯</button>
+        </div>
+      </header>
+
+      <section class="weekly-goals" aria-label="本周目标">
+        <div class="goal-column goal-learning">
+          <div class="goal-title"><h2>学习目标</h2><span class="save-dot" id="learning-dot" aria-hidden="true"></span></div>
+          <textarea id="goal-learning" data-week-field="learning" aria-label="本周学习目标" spellcheck="false" placeholder="写下本周想学的内容"></textarea>
+        </div>
+        <div class="goal-column goal-practice">
+          <div class="goal-title"><h2>实践目标</h2><span class="save-dot" id="practice-dot" aria-hidden="true"></span></div>
+          <textarea id="goal-practice" data-week-field="practice" aria-label="本周实践目标" spellcheck="false" placeholder="写下本周想做的实践"></textarea>
+        </div>
+        <div class="goal-column goal-work">
+          <div class="goal-title"><h2>工作目标</h2><span class="save-dot" id="work-dot" aria-hidden="true"></span></div>
+          <textarea id="goal-work" data-week-field="work" aria-label="本周工作目标" spellcheck="false" placeholder="写下本周的工作重点"></textarea>
+        </div>
+      </section>
+
+      <section class="daily-section" aria-label="日计划">
+        <nav class="mobile-day-rail" id="mobile-day-rail" aria-label="选择日期"></nav>
+        <div class="days-grid" id="days-grid"></div>
+      </section>
+
+      <section class="week-list" id="week-list" aria-label="连续周目标" hidden>
+        <div class="week-list-scroll" id="week-list-scroll">
+          <div class="week-list-header" aria-hidden="true">
+            <span>周次</span><span>日期</span><span>学习</span><span>实践</span><span>工作</span>
+          </div>
+          <div id="week-list-rows"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="popover status-menu" id="status-menu" role="menu" hidden>
+    <button type="button" role="menuitemradio" data-status-choice="done"><span class="face" data-status="done" aria-hidden="true"></span>完成</button>
+    <button type="button" role="menuitemradio" data-status-choice="most"><span class="face" data-status="most" aria-hidden="true"></span>大部分完成</button>
+    <button type="button" role="menuitemradio" data-status-choice="small"><span class="face" data-status="small" aria-hidden="true"></span>小部分完成</button>
+    <button type="button" role="menuitemradio" data-status-choice="none"><span class="face" data-status="none" aria-hidden="true"></span>未完成</button>
+    <button type="button" role="menuitem" data-status-choice="unset" class="clear-status">清除评价</button>
+  </div>
+
+  <div class="popover color-menu" id="color-menu" role="menu" aria-label="任务文字颜色" hidden>
+    <button type="button" role="menuitemradio" data-color-choice="neutral"><span class="color-swatch swatch-neutral" aria-hidden="true"></span><span>默认</span></button>
+    <button type="button" role="menuitemradio" data-color-choice="learning"><span class="color-swatch swatch-learning" aria-hidden="true"></span><span>学习</span></button>
+    <button type="button" role="menuitemradio" data-color-choice="practice"><span class="color-swatch swatch-practice" aria-hidden="true"></span><span>实践</span></button>
+    <button type="button" role="menuitemradio" data-color-choice="work"><span class="color-swatch swatch-work" aria-hidden="true"></span><span>工作</span></button>
+  </div>
+
+  <div class="popover more-menu" id="more-menu" role="menu" hidden>
+    <div class="account-name" id="account-name"></div>
+    <button type="button" role="menuitem" id="export-button">导出数据备份</button>
+    <button type="button" role="menuitem" id="import-button">导入数据备份</button>
+    <button type="button" role="menuitem" id="password-button">修改密码</button>
+    <button type="button" role="menuitem" id="logout-button">退出登录</button>
+  </div>
+  <dialog class="password-dialog" id="password-dialog" aria-labelledby="password-title">
+    <form id="password-form">
+      <div class="dialog-heading"><h2 id="password-title">修改密码</h2><button type="button" id="password-close" aria-label="关闭">×</button></div>
+      <label>当前密码<input name="current_password" type="password" autocomplete="current-password" required></label>
+      <label>新密码<input name="new_password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+      <p class="form-error" id="password-error" role="alert" hidden></p>
+      <button class="primary-action" type="submit">保存新密码</button>
+    </form>
+  </dialog>
+  <input id="import-file" type="file" accept="application/json,.json" hidden>
+  <div class="toast" id="toast" role="alert" hidden></div>
+</body>
+</html>

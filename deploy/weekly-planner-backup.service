@@ -1,0 +1,9 @@
+[Unit]
+Description=Back up Weekly Planner data
+After=weekly-planner.service
+
+[Service]
+Type=oneshot
+User=planner
+Group=planner
+ExecStart=/opt/weekly-planner/deploy/backup.sh
