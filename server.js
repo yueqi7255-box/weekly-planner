@@ -24,7 +24,10 @@ const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
 };
 const loginAttempts = new Map();
 const registerAttempts = new Map();
@@ -413,7 +416,7 @@ async function handleApi(req, res, url) {
 }
 
 async function serveStatic(res, pathname) {
-  const relative = pathname === '/' ? 'index.html' : pathname === '/login' ? 'login.html' : decodeURIComponent(pathname.slice(1));
+  const relative = pathname === '/' ? 'portal.html' : pathname === '/app' ? 'index.html' : pathname === '/login' ? 'login.html' : decodeURIComponent(pathname.slice(1));
   const file = path.resolve(publicDir, relative);
   assert(file.startsWith(`${publicDir}${path.sep}`) && fs.existsSync(file) && fs.statSync(file).isFile(), '页面不存在', 404);
   res.writeHead(200, {
@@ -429,11 +432,11 @@ const server = http.createServer(async (req, res) => {
     if (!['GET', 'HEAD'].includes(req.method)) checkOrigin(req);
     if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
     else if (req.method === 'GET') {
-      if (url.pathname === '/' && !currentUser(req)) {
+      if ((url.pathname === '/app' || url.pathname === '/index.html') && !currentUser(req)) {
         res.writeHead(302, { Location: '/login', 'Cache-Control': 'no-store' });
         res.end();
       } else if (url.pathname === '/login' && currentUser(req)) {
-        res.writeHead(302, { Location: '/', 'Cache-Control': 'no-store' });
+        res.writeHead(302, { Location: '/app', 'Cache-Control': 'no-store' });
         res.end();
       } else await serveStatic(res, url.pathname);
     }

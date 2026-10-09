@@ -1,27 +1,30 @@
 const form = document.getElementById('auth-form');
-const loginTab = document.getElementById('login-tab');
-const registerTab = document.getElementById('register-tab');
+const modeToggle = document.getElementById('auth-mode-toggle');
+const alternateText = document.getElementById('auth-alternate-text');
 const confirmField = document.getElementById('confirm-field');
 const errorBox = document.getElementById('auth-error');
 const submit = document.getElementById('auth-submit');
+const title = document.getElementById('auth-title');
+const help = document.getElementById('auth-help');
 let mode = 'login';
 
 function setMode(next) {
   mode = next;
-  loginTab.classList.toggle('active', next === 'login');
-  registerTab.classList.toggle('active', next === 'register');
-  loginTab.setAttribute('aria-pressed', String(next === 'login'));
-  registerTab.setAttribute('aria-pressed', String(next === 'register'));
   confirmField.hidden = next !== 'register';
   form.elements.confirm_password.required = next === 'register';
   form.elements.password.autocomplete = next === 'login' ? 'current-password' : 'new-password';
   submit.textContent = next === 'login' ? '登录' : '创建账号';
+  title.textContent = next === 'login' ? '登录' : '创建账号';
+  alternateText.textContent = next === 'login' ? '还没有账号？' : '已有账号？';
+  modeToggle.textContent = next === 'login' ? '创建账号' : '返回登录';
+  help.hidden = next !== 'register';
   errorBox.hidden = true;
   document.title = `${next === 'login' ? '登录' : '注册'} · 周计划`;
+  window.history.replaceState(null, '', next === 'register' ? '/login?mode=register' : '/login');
 }
 
-loginTab.addEventListener('click', () => setMode('login'));
-registerTab.addEventListener('click', () => setMode('register'));
+modeToggle.addEventListener('click', () => setMode(mode === 'login' ? 'register' : 'login'));
+setMode(new URLSearchParams(window.location.search).get('mode') === 'register' ? 'register' : 'login');
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
@@ -42,7 +45,7 @@ form.addEventListener('submit', async event => {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '操作失败');
-    window.location.assign('/');
+    window.location.assign('/app');
   } catch (error) {
     errorBox.textContent = error.message;
     errorBox.hidden = false;

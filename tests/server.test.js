@@ -66,9 +66,19 @@ test('accounts isolate plans, tasks, imports, and sessions', async t => {
   const start = '2026-10-12';
   assert.equal((await request(server.url, '/api/health')).data.ok, true);
   assert.equal((await request(server.url, `/api/week?start=${start}`)).status, 401);
+  const portal = await fetch(server.url);
+  assert.equal(portal.status, 200);
+  assert.match(await portal.text(), /从想过的一年/);
+  const blockedApp = await fetch(`${server.url}/app`, { redirect: 'manual' });
+  assert.equal(blockedApp.status, 302);
+  assert.equal(blockedApp.headers.get('location'), '/login');
+  assert.equal((await fetch(`${server.url}/login?mode=register`)).status, 200);
   const firstUser = await request(server.url, '/api/auth/register', 'POST', { username: 'Planner', password: 'initial-pass-123' });
   assert.equal(firstUser.status, 201);
   const firstCookie = firstUser.cookie;
+  assert.equal((await fetch(`${server.url}/app`, { headers: { Cookie: firstCookie } })).status, 200);
+  const signedInLogin = await fetch(`${server.url}/login`, { headers: { Cookie: firstCookie }, redirect: 'manual' });
+  assert.equal(signedInLogin.headers.get('location'), '/app');
   assert.equal((await request(server.url, '/api/week?start=2026-10-13', 'GET', undefined, firstCookie)).status, 400);
   assert.equal((await request(server.url, `/api/week?start=${start}`, 'GET', undefined, firstCookie)).data.week.status, 'unset');
 
